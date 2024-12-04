@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9f7ef;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            color: #155724;
+        }
+        .error {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Tính toán mua xe trả góp</h1>
+    <div class="form-group">
+        <h3>Thông tin xe</h3>
+        <p><strong>Tên:</strong> <span id="product-name"></span></p>
+        <p><strong>Nhãn hiệu:</strong> <span id="product-brand"></span></p>
+        <p><strong>Loại:</strong> <span id="product-category"></span></p>
+        <p><strong>Giá:</strong> <span id="product-price"></span></p>
+    </div>
+
+    <div class="form-group">
+        <label for="downPaymentPercentage">Thanh toán trước (%):</label>
+        <select id="downPaymentPercentage">
+            <option value="30">30%</option>
+            <option value="40">40%</option>
+            <option value="50">50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="loanTerm">Thời gian trả góp (Năm):</label>
+        <select id="loanTerm">
+            <option value="12">1 Năm</option>
+            <option value="24">2 Năm</option>
+            <option value="36">3 Năm</option>
+            <option value="48">4 Năm</option>
+            <option value="60">5 Năm</option>
+            <option value="72">6 Năm</option>
+            <option value="84">7 Năm</option>
+            <option value="96">8 Năm</option>
+        </select>
+    </div>
+
+    <button id="calculate-button">ƯỚC TÍNH TRẢ GÓP</button>
+
+    <div id="result" class="result" style="display: none;">
+        <h3>Kết quả sau khi tính toán!</h3>
+        <p><strong>Số tiền trả hàng tháng:</strong> <span id="monthly-installment"></span></p>
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const productId = 1; // Replace with dynamic product ID if necessary
+
+        // Fetch product details
+        fetch(`/api/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById("product-name").textContent = product.name;
+                document.getElementById("product-brand").textContent = product.brand;
+                document.getElementById("product-category").textContent = product.category;
+                document.getElementById("product-price").textContent = formatPrice(product.price) + " VNĐ";
+            })
+            .catch(err => {
+                document.getElementById("error").textContent = "Failed to load product details: " + err.message;
+                document.getElementById("error").style.display = "block";
+            });
+
+        // Calculate loan
+        document.getElementById("calculate-button").addEventListener("click", function () {
+            const downPaymentPercentage = document.getElementById("downPaymentPercentage").value;
+            const loanTerm = document.getElementById("loanTerm").value;
+
+            fetch("/loan-products/calculate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    downPaymentPercentage: downPaymentPercentage,
+                    loanTerm: loanTerm,
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.monthlyInstallment) {
+                        document.getElementById("monthly-installment").textContent = formatPrice(data.monthlyInstallment.toFixed(0)) + " VNĐ";
+                        document.getElementById("result").style.display = "block";
+                        document.getElementById("error").style.display = "none";
+                    } else {
+                        throw new Error("Invalid calculation result");
+                    }
+                })
+                .catch(err => {
+                    document.getElementById("error").textContent = "Failed to calculate loan: " + err.message;
+                    document.getElementById("error").style.display = "block";
+                    document.getElementById("result").style.display = "none";
+                });
+        });
+    });
+    function formatPrice(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+</script>
+</body>
+</html>

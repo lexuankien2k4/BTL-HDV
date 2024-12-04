@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.entity.Product;
 @Repository
 public interface ProductsRepository extends JpaRepository<Product, Integer> {
-
+    Product getProductById(int id);
 
 }
