@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contract Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Reset some basic styles */
+        body, h1, h3, p, ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* General styles for the body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* Dashboard summary */
+        .dashboard-summary {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-summary p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-summary span {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        /* Contract list styles */
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            background-color: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        li span {
+            color: #7f8c8d;
+        }
+
+        /* Chart container */
+        .chart-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dashboard Hợp Đồng</h1>
+
+    <div class="dashboard-summary">
+        <p>Tổng hợp đồng: <span th:text="${totalContracts}"></span></p>
+<!--        <p>Tổng số tiền thanh toán trước: <span th:text="${totalPaymentBefore}"></span></p>-->
+    </div>
+
+    <h3>Danh sách hợp đồng:</h3>
+    <ul>
+        <li th:each="contract : ${contracts}">
+            <span th:text="'Car ID: ' + ${contract.carId} + ' | Car Type: ' + ${contract.carType} + ' | Payment Before: ' + ${contract.paymentBefore}"></span>
+        </li>
+    </ul>
+
+<!--    <div class="chart-container">-->
+<!--        <canvas id="paymentChart" width="400" height="200"></canvas>-->
+<!--    </div>-->
+</div>
+
+<script>
+    var ctx = document.getElementById('paymentChart').getContext('2d');
+
+    // Lấy dữ liệu hợp đồng từ model
+    var contractsData = /*[[${contracts}]]*/ []; // Dữ liệu hợp đồng từ backend
+    var labels = [];
+    var paymentBeforeData = [];
+
+    // Lấy loại xe và tỷ lệ thanh toán trước (dưới dạng phần trăm)
+    contractsData.forEach(function(contract) {
+        labels.push(contract.carType);  // Lấy loại xe làm nhãn
+        // paymentBeforeData.push(contract.paymentBefore);  // Thanh toán trước (phần trăm)
+    });
+
+    var paymentChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels, // Các nhãn trên trục X (loại xe)
+            datasets: [{
+                label: 'Số tiền thanh toán trước (%)',
+                data: paymentBeforeData,  // Dữ liệu thanh toán trước
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

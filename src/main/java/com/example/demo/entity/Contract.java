@@ -14,8 +14,11 @@ public class Contract {
 
     private String carId;
 
-    private BigDecimal paymentBefore;
+    private int paymentBefore;
 
     private String timeContract;
+
+    @Transient  // Trường không được lưu vào DB, chỉ dùng để hiển thị
+    private String carType;
 
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.LoanCalculationRequest;
 import com.example.demo.dto.LoanCalculationResult;
+import com.example.demo.entity.Contract;
 import com.example.demo.entity.LoanProduct;
 import com.example.demo.entity.Product;
 import com.example.demo.service.ContractService;
@@ -72,6 +73,8 @@ public class LoanProductController {
             result.setMonthlyInstallment(monthlyInstallment);
             result.setProduct(product);
 
+
+
             // Return result as JSON
             return ResponseEntity.ok(result);
 
@@ -120,7 +123,11 @@ public class LoanProductController {
                 // Cập nhật số dư gốc còn lại
                 remainingPrincipal -= principalPayment;
             }
-
+            Contract contract = new Contract();
+            contract.setCarId(String.valueOf(request.getProductId()));
+            contract.setTimeContract(String.valueOf(request.getLoanTerm()));
+            contract.setPaymentBefore(request.getDownPaymentPercentage());
+            contractService.createContract(contract);
             // Trả về danh sách kết quả dưới dạng JSON
             return ResponseEntity.ok(installmentDetails);
 
