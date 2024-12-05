@@ -13,7 +13,7 @@
             color: #333;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 50px auto;
             background: #fff;
             padding: 20px;
@@ -49,7 +49,7 @@
         button:hover {
             background-color: #0056b3;
         }
-        .result {
+        .result, #installment-details {
             margin-top: 20px;
             padding: 10px;
             background-color: #e9f7ef;
@@ -65,11 +65,26 @@
             border-radius: 4px;
             color: #721c24;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Tính toán mua xe trả góp</h1>
+
     <div class="form-group">
         <h3>Thông tin xe</h3>
         <p><strong>Tên:</strong> <span id="product-name"></span></p>
@@ -100,14 +115,31 @@
             <option value="72">6 Năm</option>
             <option value="84">7 Năm</option>
             <option value="96">8 Năm</option>
+
         </select>
     </div>
 
     <button id="calculate-button">ƯỚC TÍNH TRẢ GÓP</button>
 
     <div id="result" class="result" style="display: none;">
-        <h3>Kết quả sau khi tính toán!</h3>
+        <h3>Kết quả sau khi tính toán</h3>
         <p><strong>Số tiền trả hàng tháng:</strong> <span id="monthly-installment"></span></p>
+    </div>
+
+    <div id="installment-details" style="display: none;">
+        <h3>Chi tiết từng kỳ thanh toán</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Kỳ</th>
+                <th>Dư nợ đầu kỳ (VNĐ)</th>
+                <th>Gốc phải trả (VNĐ)</th>
+                <th>Lãi phải trả (VNĐ)</th>
+                <th>Gốc + Lãi (VNĐ)</th>
+            </tr>
+            </thead>
+            <tbody id="installment-details-body"></tbody>
+        </table>
     </div>
 
     <div id="error" class="error" style="display: none;"></div>
@@ -115,7 +147,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const productId = 1; // Replace with dynamic product ID if necessary
+        const productId = 1; // Replace with dynamic product ID
 
         // Fetch product details
         fetch(`/api/products/${productId}`)
@@ -127,47 +159,71 @@
                 document.getElementById("product-price").textContent = formatPrice(product.price) + " VNĐ";
             })
             .catch(err => {
-                document.getElementById("error").textContent = "Failed to load product details: " + err.message;
-                document.getElementById("error").style.display = "block";
+                displayError("Failed to load product details: " + err.message);
             });
 
-        // Calculate loan
+        // Calculate loan and display details
         document.getElementById("calculate-button").addEventListener("click", function () {
             const downPaymentPercentage = document.getElementById("downPaymentPercentage").value;
             const loanTerm = document.getElementById("loanTerm").value;
 
-            fetch("/loan-products/calculate", {
+            fetch("/loan-products/calculate-installments", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     productId: productId,
-                    downPaymentPercentage: downPaymentPercentage,
-                    loanTerm: loanTerm,
+                    downPaymentPercentage: parseFloat(downPaymentPercentage),
+                    loanTerm: parseInt(loanTerm),
                 }),
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.monthlyInstallment) {
-                        document.getElementById("monthly-installment").textContent = formatPrice(data.monthlyInstallment.toFixed(0)) + " VNĐ";
+                    // Kiểm tra nếu dữ liệu trả về có mảng installments
+                    if (Array.isArray(data) && data.length > 0) {
+                        const tbody = document.getElementById("installment-details-body");
+                        tbody.innerHTML = ""; // Xóa nội dung cũ
+
+                        let totalPayment = 0;
+
+                        data.forEach(installment => {
+                            totalPayment += installment.totalPayment;
+
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                        <td>${installment.month}</td>
+                        <td>${formatPrice(installment.remainingPrincipal)} VNĐ</td>
+                        <td>${formatPrice(installment.principalPayment)} VNĐ</td>
+                        <td>${formatPrice(installment.interestPayment)} VNĐ</td>
+                        <td>${formatPrice(installment.totalPayment)} VNĐ</td>
+                    `;
+                            tbody.appendChild(row);
+                        });
+
+                        document.getElementById("monthly-installment").textContent = formatPrice(totalPayment / data.length) + " VNĐ";
                         document.getElementById("result").style.display = "block";
-                        document.getElementById("error").style.display = "none";
+                        document.getElementById("installment-details").style.display = "block";
                     } else {
-                        throw new Error("Invalid calculation result");
+                        displayError("Không tìm thấy dữ liệu trả góp. Vui lòng kiểm tra lại.");
                     }
                 })
                 .catch(err => {
-                    document.getElementById("error").textContent = "Failed to calculate loan: " + err.message;
-                    document.getElementById("error").style.display = "block";
-                    document.getElementById("result").style.display = "none";
+                    displayError("Lỗi khi tính toán: " + err.message);
                 });
         });
-    });
-    function formatPrice(price) {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
 
+
+        function formatPrice(price) {
+            return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function displayError(message) {
+            const errorDiv = document.getElementById("error");
+            errorDiv.textContent = message;
+            errorDiv.style.display = "block";
+        }
+    });
 </script>
 </body>
 </html>
