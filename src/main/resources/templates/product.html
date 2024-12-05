@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin Xe Ô Tô</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            width: 30%;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .product-name {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .product-category,
+        .product-price {
+            color: gray;
+        }
+        .product-price {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="product-container">
+    <!-- Các sản phẩm sẽ được hiển thị ở đây -->
+</div>
+
+<script>
+    // Fetch dữ liệu từ API
+    async function fetchProducts() {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        displayProducts(products);
+    }
+
+    function displayProducts(products) {
+        const container = document.getElementById('product-container');
+        container.innerHTML = ''; // Clear the container before rendering
+
+        // Chia sản phẩm thành từng nhóm 3 sản phẩm
+        let productRows = [];
+        for (let i = 0; i < products.length; i += 3) {
+            productRows.push(products.slice(i, i + 3));
+        }
+
+        // Lặp qua từng nhóm và hiển thị các sản phẩm
+        productRows.forEach(row => {
+            const rowDiv = document.createElement('div');
+            rowDiv.style.display = 'flex';
+            rowDiv.style.justifyContent = 'space-between';
+
+            row.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+
+                // Thêm sự kiện onclick để chuyển hướng khi bấm vào sản phẩm
+                productCard.onclick = function () {
+                    localStorage.setItem('car_id',product.id);
+                    window.location.href = `/contract`;
+                };
+
+                // Cập nhật đường dẫn hình ảnh để trỏ đến thư mục đúng
+                const imagePath = '/images/' + product.imageFileName;
+
+                // Tạo các phần tử của từng xe ô tô
+                productCard.innerHTML = `
+                    <img src="${imagePath}" class="product-image" alt="${product.name}">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-category">${product.category}</div>
+                    <div class="product-price">${new Intl.NumberFormat().format(product.price)} VND</div>
+                `;
+                rowDiv.appendChild(productCard);
+            });
+
+            container.appendChild(rowDiv);
+        });
+    }
+
+
+    // Gọi API khi trang được tải
+    window.onload = fetchProducts;
+</script>
+
+
+
+</body>
+</html>

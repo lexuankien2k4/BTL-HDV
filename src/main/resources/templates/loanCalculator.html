@@ -147,7 +147,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const productId = 1; // Replace with dynamic product ID
+        const productId = localStorage.getItem('car_id'); // Replace with dynamic product ID
 
         // Fetch product details
         fetch(`/api/products/${productId}`)

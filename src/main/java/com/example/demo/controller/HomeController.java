@@ -11,4 +11,9 @@ public class HomeController {
     public String contract() {
         return "loanCalculator";
     }
+
+    @GetMapping("/")
+    public String home() {
+        return "product";
+    }
 }

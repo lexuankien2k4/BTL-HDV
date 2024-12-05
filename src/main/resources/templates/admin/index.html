@@ -42,6 +42,80 @@
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->
+<script>
+  // Kiểm tra đăng nhập khi tải trang
+  window.onload = function() {
+    // Kiểm tra nếu đã có cookie đăng nhập
+    if (!isLoggedIn()) {
+      checkLogin();  // Nếu chưa đăng nhập, yêu cầu nhập thông tin
+    } else {
+      console.log("Bạn đã đăng nhập rồi!");
+    }
+  };
+
+  // Kiểm tra xem người dùng đã đăng nhập hay chưa
+  function isLoggedIn() {
+    const username = getCookie("username");
+    const password = getCookie("password");
+    const expiryTime = getCookie("expiry");
+
+    // Kiểm tra nếu cookie hợp lệ và chưa hết hạn
+    if (username && password && expiryTime) {
+      const currentTime = new Date().getTime();
+      if (currentTime < expiryTime) {
+        return username === "admin" && password === "admin";  // Kiểm tra thông tin đăng nhập
+      }
+    }
+    return false;
+  }
+
+  // Hàm yêu cầu người dùng nhập tên đăng nhập và mật khẩu
+  function checkLogin() {
+    var username = prompt("Nhập tên đăng nhập:");
+    var password = prompt("Nhập mật khẩu:");
+
+    // Kiểm tra thông tin đăng nhập
+    if (username === "admin" && password === "admin") {
+      alert("Đăng nhập thành công!");
+      // Lưu thông tin đăng nhập vào cookie với thời gian hết hạn 1 giờ
+      setCookie("username", username, 1); // Lưu tên đăng nhập trong 1 giờ
+      setCookie("password", password, 1); // Lưu mật khẩu trong 1 giờ
+      setCookie("expiry", new Date().getTime() + 60 * 60 * 1000, 1); // Thời gian hết hạn cookie là 1 giờ
+    } else {
+      alert("Tên đăng nhập hoặc mật khẩu không đúng!");
+      window.location.href = "/admin";  // Redirect nếu sai
+    }
+  }
+
+  // Hàm để đặt cookie
+  function setCookie(name, value, hours) {
+    var expires = "";
+    if (hours) {
+      var date = new Date();
+      date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+      expires = "; expires=" + date.toGMTString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  }
+
+  // Hàm để lấy giá trị của cookie theo tên
+  function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  // Hàm để xóa cookie
+  function eraseCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+  }
+</script>
+
 
 <script th:src="@{/assets/js/jquery.min.js}"></script>
 <script th:src="@{/assets/js/jquery-ui.js}"></script>
