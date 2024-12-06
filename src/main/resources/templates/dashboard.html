@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contract Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Reset some basic styles */
+        body, h1, h3, p, ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* General styles for the body */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        /* Title */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* Dashboard summary */
+        .dashboard-summary {
+            background-color: #ffffff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-summary p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-summary span {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        /* Contract list styles */
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        li {
+            background-color: #ffffff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        li span {
+            color: #7f8c8d;
+        }
+
+        /* Chart container */
+        .chart-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #f4f6f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .pagination-btn:hover {
+            background-color: #2c3e50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Phân tích loại xe oto được chú ý</h1>
+
+    <div class="dashboard-summary">
+        <p>Tổng các lựa chọn đã được yêu cầu: <span th:text="${totalContracts}"></span></p>
+<!--        <p>Tổng số tiền thanh toán trước: <span th:text="${totalPaymentBefore}"></span></p>-->
+    </div>
+
+    <h3>Danh sách hợp đồng:</h3>
+    <ul id="contractList">
+        <li th:each="contract : ${contracts}">
+            <span th:text="'Car ID: ' + ${contract.carId} + ' | Car Type: ' + ${contract.carType} + ' | Payment Before: ' + ${contract.paymentBefore}"></span>
+        </li>
+    </ul>
+    <div id="pagination" class="pagination"></div>
+
+
+    <div class="chart-container">
+        <canvas id="carTypeChart" width="400" height="200"></canvas>
+    </div>
+
+</div>
+
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy tất cả các phần tử <li> trong danh sách
+        const contracts = document.querySelectorAll('#contractList li');
+
+        // Số hợp đồng trên mỗi trang
+        const itemsPerPage = 5;
+
+        // Tổng số trang
+        const totalPages = Math.ceil(contracts.length / itemsPerPage);
+
+        // Container hiển thị danh sách
+        const contractList = document.getElementById('contractList');
+
+        // Container cho phân trang
+        const paginationContainer = document.getElementById('pagination');
+
+        // Hiển thị hợp đồng cho trang hiện tại
+        function showPage(page) {
+            // Ẩn tất cả các hợp đồng
+            contracts.forEach((contract, index) => {
+                contract.style.display = 'none';
+            });
+
+            // Hiển thị các hợp đồng của trang hiện tại
+            const start = (page - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            for (let i = start; i < end && i < contracts.length; i++) {
+                contracts[i].style.display = 'block';
+            }
+
+            // Làm nổi bật nút trang hiện tại
+            const paginationButtons = document.querySelectorAll('.pagination-btn');
+            paginationButtons.forEach((btn, index) => {
+                if (index + 1 === page) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Tạo các nút phân trang
+        function createPagination() {
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.classList.add('pagination-btn');
+                button.addEventListener('click', function () {
+                    showPage(i);
+                });
+                paginationContainer.appendChild(button);
+            }
+        }
+
+        // Khởi tạo phân trang
+        createPagination();
+
+        // Hiển thị trang đầu tiên
+        showPage(1);
+    });
+
+    // Lấy tất cả các phần tử <li> trong danh sách
+    var contractListItems = document.querySelectorAll('#contractList li');
+
+    // Tạo một đối tượng để nhóm và đếm loại xe
+    var carTypeCounts = {};
+
+    // Duyệt qua từng phần tử <li> để trích xuất thông tin
+    contractListItems.forEach(function (item) {
+        // Trích xuất văn bản từ <span> bên trong <li>
+        var text = item.querySelector('span').textContent;
+
+        // Tìm kiếm giá trị "Car Type" bằng cách parse text
+        var carTypeMatch = text.match(/Car Type: (\w+)/);
+        if (carTypeMatch && carTypeMatch[1]) {
+            var carType = carTypeMatch[1];
+            // Tăng bộ đếm cho loại xe này
+            carTypeCounts[carType] = (carTypeCounts[carType] || 0) + 1;
+        }
+    });
+
+    // Tách dữ liệu thành labels và data cho biểu đồ
+    var labels = Object.keys(carTypeCounts);
+    var data = Object.values(carTypeCounts);
+
+    // Vẽ biểu đồ bằng Chart.js
+    var ctx = document.getElementById('carTypeChart').getContext('2d');
+    var carTypeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Số lượng loại xe',
+                data: data,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>

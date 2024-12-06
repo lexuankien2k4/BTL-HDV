@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+        
+    <style>
+        body  {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        } 
+        body .container {
+        	
+            max-width: 1000px;
+            margin: 100px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            justify-content:center;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result, #installment-details {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9f7ef;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            color: #155724;
+        }
+        .error {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            color: #721c24;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<header class="flex flex-wrap justify-between items-center p-4 " id="menu" style="background-color: lightgrey;">
+            <div class="flex items-center">
+                <a href="#">
+                <img alt="Vinfast Logo" class="h-8" height="50" src="/assets/images/logovin.png" width="100"/>
+                </a>
+            </div>
+            <nav class="flex space-x-8">
+                <a class="gioithieu" href="#">Giới thiệu</a>
+                <a class="oto" href="#">Ô tô</a>
+                <a class="xemay" href="#">Xe máy điện</a>
+                <a class="dichvu" href="#">Dịch vụ hậu mãi</a>
+                <a class="pin" href="#">Pin và trạm sạc</a>
+                <a class="langluong" href="#">Lưu trữ năng lượng</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a class="taikhoan" href="#">Tài khoản</a>
+                <a href="#">
+                <button class="dangky">Đăng ký lái thử</button></a>
+                <button id="menu-dv" class="text-black"><i class="fas fa-bars"></i></button>
+            </div>
+        </header>
+<div class="container">
+    <h1>Tính toán mua xe trả góp</h1>
+
+    <div class="form-group">
+        <h2><b>Thông tin xe</b></h2>
+        <p><strong>Tên:</strong> <span id="product-name"></span></p>
+        <p><strong>Nhãn hiệu:</strong> <span id="product-brand"></span></p>
+        <p><strong>Loại:</strong> <span id="product-category"></span></p>
+        <p><strong>Giá:</strong> <span id="product-price"></span></p>
+    </div>
+
+    <div class="form-group">
+        <label for="downPaymentPercentage">Thanh toán trước (%):</label>
+        <select id="downPaymentPercentage">
+            <option value="30">30%</option>
+            <option value="40">40%</option>
+            <option value="50">50%</option>
+            <option value="60">60%</option>
+            <option value="70">70%</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="loanTerm">Thời gian trả góp (Năm):</label>
+        <select id="loanTerm">
+            <option value="12">1 Năm</option>
+            <option value="24">2 Năm</option>
+            <option value="36">3 Năm</option>
+            <option value="48">4 Năm</option>
+            <option value="60">5 Năm</option>
+            <option value="72">6 Năm</option>
+            <option value="84">7 Năm</option>
+            <option value="96">8 Năm</option>
+
+        </select>
+    </div>
+
+    <button id="calculate-button">ƯỚC TÍNH TRẢ GÓP</button>
+
+    <div id="result" class="result" style="display: none;">
+        <h3>Kết quả sau khi tính toán</h3>
+        <p><strong>Số tiền trả hàng tháng:</strong> <span id="monthly-installment"></span></p>
+    </div>
+
+    <div id="installment-details" style="display: none;">
+        <h3>Chi tiết từng kỳ thanh toán</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Kỳ</th>
+                <th>Dư nợ đầu kỳ (VNĐ)</th>
+                <th>Gốc phải trả (VNĐ)</th>
+                <th>Lãi phải trả (VNĐ)</th>
+                <th>Gốc + Lãi (VNĐ)</th>
+            </tr>
+            </thead>
+            <tbody id="installment-details-body"></tbody>
+        </table>
+    </div>
+
+    <div id="error" class="error" style="display: none;"></div>
+</div>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const productId = localStorage.getItem('car_id'); // Replace with dynamic product ID
+
+        // Fetch product details
+        fetch(`/api/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById("product-name").textContent = product.name;
+                document.getElementById("product-brand").textContent = product.brand;
+                document.getElementById("product-category").textContent = product.category;
+                document.getElementById("product-price").textContent = formatPrice(product.price) + " VNĐ";
+            })
+            .catch(err => {
+                displayError("Failed to load product details: " + err.message);
+            });
+
+        // Calculate loan and display details
+        document.getElementById("calculate-button").addEventListener("click", function () {
+            const downPaymentPercentage = document.getElementById("downPaymentPercentage").value;
+            const loanTerm = document.getElementById("loanTerm").value;
+
+            fetch("/loan-products/calculate-installments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    downPaymentPercentage: parseFloat(downPaymentPercentage),
+                    loanTerm: parseInt(loanTerm),
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Kiểm tra nếu dữ liệu trả về có mảng installments
+                    if (Array.isArray(data) && data.length > 0) {
+                        const tbody = document.getElementById("installment-details-body");
+                        tbody.innerHTML = ""; // Xóa nội dung cũ
+
+                        let totalPayment = 0;
+
+                        data.forEach(installment => {
+                            totalPayment += installment.totalPayment;
+
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                        <td>${installment.month}</td>
+                        <td>${formatPrice(installment.remainingPrincipal)} VNĐ</td>
+                        <td>${formatPrice(installment.principalPayment)} VNĐ</td>
+                        <td>${formatPrice(installment.interestPayment)} VNĐ</td>
+                        <td>${formatPrice(installment.totalPayment)} VNĐ</td>
+                    `;
+                            tbody.appendChild(row);
+                        });
+
+                        document.getElementById("monthly-installment").textContent = formatPrice(totalPayment / data.length) + " VNĐ";
+                        document.getElementById("result").style.display = "block";
+                        document.getElementById("installment-details").style.display = "block";
+                    } else {
+                        displayError("Không tìm thấy dữ liệu trả góp. Vui lòng kiểm tra lại.");
+                    }
+                })
+                .catch(err => {
+                    displayError("Lỗi khi tính toán: " + err.message);
+                });
+        });
+
+
+        function formatPrice(price) {
+            return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        function displayError(message) {
+            const errorDiv = document.getElementById("error");
+            errorDiv.textContent = message;
+            errorDiv.style.display = "block";
+        }
+    });
+</script>
+</body>
+</html>
