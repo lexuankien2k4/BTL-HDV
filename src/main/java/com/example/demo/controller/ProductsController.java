@@ -21,13 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.servlet.ModelAndView;
 
-<<<<<<< HEAD
+
 import com.example.demo.dto.ProductDto;
 import com.example.demo.entity.Product;
-=======
+
 import com.example.demo.entity.Product;
-import com.example.demo.entity.ProductDto;
->>>>>>> 9bb8b6ab31e14e7c2263b2e96959d6883bb6bb38
 import com.example.demo.repository.ProductsRepository;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.ProductServiceImpl;
