@@ -4,24 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Calculator</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-        
     <style>
-      
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f9f9f9;
             color: #333;
-        } 
-        body .container {
-        	
-            max-width: 1000px;
-            margin: 100px auto;
-
+        }
+        header {
+            background-color: lightgrey;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        header button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        header button:hover {
+            background-color: #0056b3;
         }
         .container {
             max-width: 700px;
@@ -30,9 +44,6 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-            justify-content:center;
-
         }
         h1 {
             text-align: center;
@@ -55,13 +66,17 @@
             border-radius: 4px;
         }
         button {
-            background-color: #007bff;
+            background-color: #007bff; /* Nền màu xanh lá */
             color: white;
             border: none;
             cursor: pointer;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #082b50; /* Màu xanh lá đậm hơn */
         }
         .result, #installment-details {
             margin-top: 20px;
@@ -96,37 +111,29 @@
     </style>
 </head>
 <body>
-<header class="flex flex-wrap justify-between items-center p-4 " id="menu" style="background-color: lightgrey;">
-            <div class="flex items-center">
-                <a href="#">
-                <img alt="Vinfast Logo" class="h-8" height="50" src="/assets/images/logovin.png" width="100"/>
-                </a>
-            </div>
-            <nav class="flex space-x-8">
-                <a class="gioithieu" href="#">Giới thiệu</a>
-                <a class="oto" href="#">Ô tô</a>
-                <a class="xemay" href="#">Xe máy điện</a>
-                <a class="dichvu" href="#">Dịch vụ hậu mãi</a>
-                <a class="pin" href="#">Pin và trạm sạc</a>
-                <a class="langluong" href="#">Lưu trữ năng lượng</a>
-            </nav>
-            <div class="flex items-center space-x-4">
-                <a class="taikhoan" href="#">Tài khoản</a>
-                <a href="#">
-                <button class="dangky">Đăng ký lái thử</button></a>
-                <button id="menu-dv" class="text-black"><i class="fas fa-bars"></i></button>
-            </div>
-        </header>
-
+<header>
+    <div>
+        <a href="#">
+            <img src="/assets/images/logovin.png" alt="Logo" style="height: 40px;">
+        </a>
+    </div>
+    <nav>
+        <a href="#">Giới thiệu</a>
+        <a href="#">Ô tô</a>
+        <a href="#">Xe máy điện</a>
+        <a href="#">Dịch vụ hậu mãi</a>
+        <a href="#">Pin và trạm sạc</a>
+        <a href="#">Lưu trữ năng lượng</a>
+    </nav>
+    <div>
+        <button>Đăng ký lái thử</button>
+    </div>
+</header>
 <div class="container">
     <h1>Tính toán mua xe trả góp</h1>
 
     <div class="form-group">
-
-        <h2><b>Thông tin xe</b></h2>
-
         <h3>Thông tin xe</h3>
-
         <p><strong>Tên:</strong> <span id="product-name"></span></p>
         <p><strong>Nhãn hiệu:</strong> <span id="product-brand"></span></p>
         <p><strong>Loại:</strong> <span id="product-category"></span></p>
@@ -155,7 +162,6 @@
             <option value="72">6 Năm</option>
             <option value="84">7 Năm</option>
             <option value="96">8 Năm</option>
-
         </select>
     </div>
 
@@ -184,12 +190,6 @@
 
     <div id="error" class="error" style="display: none;"></div>
 </div>
-
-
-
-
-
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const productId = localStorage.getItem('car_id'); // Replace with dynamic product ID

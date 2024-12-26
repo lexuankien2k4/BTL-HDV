@@ -6,8 +6,7 @@
     <title>Thông tin Xe Ô Tô</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-        <link rel="stylesheet" href="view-product-car.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,133 +14,122 @@
             margin: 0;
             padding: 0;
         }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-        }
+
         .product-card {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 10px;
-            width: 30%;
+            overflow: hidden;
             text-align: center;
             padding: 20px;
-            box-sizing: border-box;
+            transition: transform 0.3s ease;
         }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
         .product-image {
             width: 100%;
-            height: auto;
+            height: 180px; /* Fixed height for consistent alignment */
+            object-fit: cover;
             border-radius: 8px;
         }
+
         .product-name {
             font-size: 1.2em;
             margin: 10px 0;
             font-weight: bold;
+            color: #333;
         }
-        .product-category,
-        .product-price {
-            color: gray;
+
+        .product-category {
+            color: #777;
         }
+
         .product-price {
             font-size: 1.1em;
             font-weight: bold;
-            color: green;
+            color: #28a745;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-<header class="flex flex-wrap justify-between items-center p-4 " id="menu" style="background-color: lightgrey;">
-            <div class="flex items-center">
-                <a href="#">
-                <img alt="Vinfast Logo" class="h-8" height="50" src="/assets/images/logovin.png" width="100"/>
-                </a>
-            </div>
-            <nav class="flex space-x-8">
-                <a class="gioithieu" href="#">Giới thiệu</a>
-                <a class="oto" href="#">Ô tô</a>
-                <a class="xemay" href="#">Xe máy điện</a>
-                <a class="dichvu" href="#">Dịch vụ hậu mãi</a>
-                <a class="pin" href="#">Pin và trạm sạc</a>
-                <a class="langluong" href="#">Lưu trữ năng lượng</a>
-            </nav>
-            <div class="flex items-center space-x-4">
-                <a class="taikhoan" href="#">Tài khoản</a>
-                <a href="#">
-                <button class="dangky">Đăng ký lái thử</button></a>
-                <button id="menu-dv" class="text-black"><i class="fas fa-bars"></i></button>
-            </div>
-        </header>
+<header class="flex justify-between items-center p-4 bg-gray-200">
+    <a href="#">
+        <img alt="Vinfast Logo" class="h-10" src="/assets/images/logovin.png"/>
+    </a>
+    <nav class="hidden md:flex space-x-8 text-gray-800 font-bold">
+        <a href="#" class="hover:text-blue-600">Giới thiệu</a>
+        <a href="#" class="hover:text-blue-600">Ô tô</a>
+        <a href="#" class="hover:text-blue-600">Xe máy điện</a>
+        <a href="#" class="hover:text-blue-600">Dịch vụ hậu mãi</a>
+        <a href="#" class="hover:text-blue-600">Pin và trạm sạc</a>
+        <a href="#" class="hover:text-blue-600">Lưu trữ năng lượng</a>
+    </nav>
+    <div class="flex items-center space-x-4">
+        <a href="#" class="hover:text-blue-600 font-bold">Tài khoản</a>
+        <a href="#">
+            <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">Đăng ký lái thử</button>
+        </a>
+        <button id="menu-dv" class="text-black md:hidden"><i class="fas fa-bars"></i></button>
+    </div>
+</header>
 
-<div class="container" id="product-container">
-    <!-- Các sản phẩm sẽ được hiển thị ở đây -->
+<div class="container flex flex-wrap justify-center p-6" id="product-container">
+    <!-- Products will be displayed here -->
 </div>
-<footer class="bg-white py-10">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-                <img alt="Vinfast Logo" class="h-8" height="50" src="/assets/images/logovin.png" width="100"/>
-                    
-                <p class="text-gray-600">Công ty TNHH Kinh doanh Thương mại và Dịch vụ VinFast</p>
-                <p class="text-gray-600"><a class="font-bold mb-2"  >MST/MSDN:</a> 0108926276 do Sở KHĐT TP Hà Nội cấp lần đầu ngày 01/10/2019 và các lần thay đổi tiếp theo.</p>
-                <p class="text-gray-600"><a class="font-bold mb-2"  >>Địa chỉ trụ sở chính:</a> Số 7, đường Bằng Lăng 1, Khu đô thị Vinhomes Riverside, Phường Việt Hưng, Quận Long Biên, Thành phố Hà Nội, Việt Nam</p>
-                <p class="text-gray-600"><a class="font-bold mb-2"  >Hệ sinh thái: </a>    <a href="#"> Vinhomes </a>  <a href="#" > Vinmec </a>   <a href="#" >Vinpearl </a></p>
-            </div>
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <ul class="text-gray-600 space-y-2">
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">VỀ VINFAST</a>
-                    </li>
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">VỀ VINGROUP</a>
-                    </li>
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">TIN TỨC</a>
-                    </li>
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">ƯU ĐÃI</a>
-                    </li>
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">SHOWROOM &amp; ĐẠI LÝ</a>
-                    </li>
-                    <li>
-                        <a class="hover:underline text-gray-800 font-bold mb-2" href="#">ĐIỀU KHOẢN CHÍNH SÁCH</a>
-                    </li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-gray-800 font-bold mb-2">HOTLINE</h3>
-                    <p class="text-gray-600">
-                    <i class="fas fa-phone-alt"></i>1900 23 23 89</p>
-                    <p class="text-gray-600"><i class="fas fa-envelope"></i>support.vn@vinfastauto.com</p>
-                    <div class="mt-4">
-                        <h3 class="text-gray-800 font-bold mb-2">Kết nối với VinFast</h3>
-                        <div class="flex space-x-4">
-                            <a class="text-gray-600 hover:text-blue-600" href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a class="text-gray-600 hover:text-blue-600" href="#"><i class="fab fa-youtube"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="container mx-auto mt-8 text-center text-gray-600">
-                    <img alt="Certification logo" class="mx-auto mb-4" height="50" src="/assets/images/logovin.png" width="100"/>
-                    <p> VinFast. All rights reserved.</p>
-                    <p>© Copyright 2024</p>
-                </div>
-            </div>
-    
+
+<footer class="bg-gray-100 py-10">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        <div>
+            <img alt="Vinfast Logo" class="h-10 mb-4" src="/assets/images/logovin.png"/>
+            <p class="text-gray-600">Công ty TNHH Kinh doanh Thương mại và Dịch vụ VinFast</p>
+            <p class="text-gray-600">MST/MSDN: 0108926276</p>
+            <p class="text-gray-600">Địa chỉ: Số 7, đường Bằng Lăng 1, Long Biên, Hà Nội</p>
         </div>
-    
-    </footer>
-=======
-<div class="container" id="product-container">
-    <!-- Các sản phẩm sẽ được hiển thị ở đây -->
-</div>
-
+        <div>
+            <ul class="text-gray-600 space-y-2">
+                <li><a class="hover:underline font-bold" href="#">Về VinFast</a></li>
+                <li><a class="hover:underline font-bold" href="#">Về Vingroup</a></li>
+                <li><a class="hover:underline font-bold" href="#">Tin tức</a></li>
+                <li><a class="hover:underline font-bold" href="#">Ưu đãi</a></li>
+                <li><a class="hover:underline font-bold" href="#">Showroom & Đại lý</a></li>
+                <li><a class="hover:underline font-bold" href="#">Điều khoản chính sách</a></li>
+            </ul>
+        </div>
+        <div class="text-center">
+            <h3 class="text-gray-800 font-bold mb-4">Hotline</h3>
+            <p class="text-gray-600"><i class="fas fa-phone-alt"></i> 1900 23 23 89</p>
+            <p class="text-gray-600"><i class="fas fa-envelope"></i> support.vn@vinfastauto.com</p>
+            <div class="mt-4">
+                <h3 class="text-gray-800 font-bold mb-2">Kết nối với VinFast</h3>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-8 text-gray-600">
+        <p>© 2024 VinFast. All rights reserved.</p>
+    </div>
+</footer>
 
 <script>
-    // Fetch dữ liệu từ API
     async function fetchProducts() {
         const response = await fetch('/api/products');
         const products = await response.json();
@@ -150,53 +138,30 @@
 
     function displayProducts(products) {
         const container = document.getElementById('product-container');
-        container.innerHTML = ''; // Clear the container before rendering
+        container.innerHTML = '';
 
-        // Chia sản phẩm thành từng nhóm 3 sản phẩm
-        let productRows = [];
-        for (let i = 0; i < products.length; i += 3) {
-            productRows.push(products.slice(i, i + 3));
-        }
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
 
-        // Lặp qua từng nhóm và hiển thị các sản phẩm
-        productRows.forEach(row => {
-            const rowDiv = document.createElement('div');
-            rowDiv.style.display = 'flex';
-            rowDiv.style.justifyContent = 'space-between';
+            productCard.onclick = () => {
+                localStorage.setItem('car_id', product.id);
+                window.location.href = `/contract`;
+            };
 
-            row.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
+            const imagePath = '/images/' + product.imageFileName;
 
-                // Thêm sự kiện onclick để chuyển hướng khi bấm vào sản phẩm
-                productCard.onclick = function () {
-                    localStorage.setItem('car_id',product.id);
-                    window.location.href = `/contract`;
-                };
-
-                // Cập nhật đường dẫn hình ảnh để trỏ đến thư mục đúng
-                const imagePath = '/images/' + product.imageFileName;
-
-                // Tạo các phần tử của từng xe ô tô
-                productCard.innerHTML = `
-                    <img src="${imagePath}" class="product-image" alt="${product.name}">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-category">${product.category}</div>
-                    <div class="product-price">${new Intl.NumberFormat().format(product.price)} VND</div>
-                `;
-                rowDiv.appendChild(productCard);
-            });
-
-            container.appendChild(rowDiv);
+            productCard.innerHTML = `
+                <img src="${imagePath}" class="product-image" alt="${product.name}">
+                <div class="product-name">${product.name}</div>
+                <div class="product-category">${product.category}</div>
+                <div class="product-price">${new Intl.NumberFormat().format(product.price)} VND</div>
+            `;
+            container.appendChild(productCard);
         });
     }
 
-
-    // Gọi API khi trang được tải
     window.onload = fetchProducts;
 </script>
-
-
-
 </body>
 </html>

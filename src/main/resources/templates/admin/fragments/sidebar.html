@@ -1,61 +1,51 @@
-  <aside class="main-sidebar" th:fragment="sidebar">
-    <!-- sidebar: style can be found in sidebar.less -->
-    <section class="sidebar">
-      <!-- Sidebar user panel -->
-      <div class="user-panel">
-        <div class="pull-left image">
-          <img th:src="@{/assets/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
-        </div>
-        <div class="pull-left info">
-          <p>Alexander Pierce</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-        </div>
+<aside class="main-sidebar" th:fragment="sidebar">
+  <!-- Sidebar: style can be found in sidebar.less -->
+  <section class="sidebar">
+    <!-- Sidebar user panel -->
+    <div class="user-panel">
+      <div class="pull-left image">
+        <img th:src="@{/assets/images/user2-160x160.jpg}" class="img-circle" alt="User Image">
       </div>
-      <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-          <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
-      <!-- /.search form -->
-      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <div class="pull-left info">
+        <p>Alexander Pierce</p>
+        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+      </div>
+    </div>
 
-      <ul class="sidebar-menu" data-widget="tree">
+    <!-- Search form -->
+    <form action="#" method="get" class="sidebar-form">
+      <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Search...">
+        <span class="input-group-btn">
+          <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+        </span>
+      </div>
+    </form>
+    <!-- /.search form -->
 
-        <li>
-          <a th:href="@{/products}">
-            <i class="fa fa-th"></i> <span>Quản lý Ô TÔ </span>
-            <span class="pull-right-container">
-              <small class="label pull-right bg-green">FE</small>
-            </span>
-          </a>
-        </li>
+    <!-- Sidebar menu -->
+    <ul class="sidebar-menu" data-widget="tree">
+      <!-- Manage Cars Section -->
+      <li>
+        <a th:href="@{/products}">
+          <i class="fa fa-car"></i> <span>Quản lý Ô TÔ</span>
+          <span class="pull-right-container">
+            <small class="label pull-right bg-green">New</small>
+          </span>
+        </a>
+      </li>
 
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-dashboard"></i> <span>Quản lý Users</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
 
-        </li>
-        
-        <li>
-          <a href="/dashboard">
-            <i class="fa fa-th"></i> <span>Thống kê</span>
-            <span class="pull-right-container">
-              <small class="label pull-right bg-green">Hot</small>
-            </span>
-          </a>
-        </li>
-        
-      </ul>
-    </section>
-    <!-- /.sidebar -->
-  </aside>
-
+      <!-- Dashboard Section -->
+      <li>
+        <a href="/dashboard">
+          <i class="fa fa-dashboard"></i> <span>Thống kê</span>
+          <span class="pull-right-container">
+            <small class="label pull-right bg-green">Hot</small>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </section>
+  <!-- /.sidebar -->
+</aside>

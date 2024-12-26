@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 public class ContractController {
@@ -22,9 +23,16 @@ public class ContractController {
 
         // Lấy danh sách loại xe tương ứng với carId (productId)
         for (Contract contract : contracts) {
-            String carType = contractService.getCarTypeByProductId(Integer.parseInt(contract.getCarId()));
-            contract.setCarType(carType);  // Set lại loại xe cho hợp đồng
+            try {
+                String carType = contractService.getCarTypeByProductId(Integer.parseInt(contract.getCarId()));
+                contract.setCarType(carType);  // Set lại loại xe cho hợp đồng
+            } catch (NumberFormatException e) {
+                contract.setCarType("Invalid Car ID"); // Xử lý ID không hợp lệ
+            } catch (NoSuchElementException e) {
+                contract.setCarType("Unknown Type"); // Xử lý khi không tìm thấy loại xe
+            }
         }
+
 
         // Truyền các dữ liệu vào model cho Thymeleaf
         model.addAttribute("totalContracts", contractService.countContracts());

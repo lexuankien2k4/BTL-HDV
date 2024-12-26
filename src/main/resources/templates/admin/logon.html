@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng Nhập - Ô tô</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: url('/assets/images/background.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background-color: white;
+      width: 400px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .login-container img {
+      width: 80px;
+      margin-bottom: 15px;
+    }
+
+    .login-container h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .login-container form {
+      margin-top: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+      outline: none;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      color: white;
+      background-color: #6a11cb;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2575fc;
+    }
+
+    .options {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+
+    .options a {
+      text-decoration: none;
+      color: #6a11cb;
+    }
+
+    .options a:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <!-- Sử dụng logo từ thư mục static -->
+  <img src="/assets/images/logo.png">
+  <h1>ĐĂNG NHẬP</h1>
+  <form action="#" method="POST">
+    <div class="form-group">
+      <input type="text" name="username" placeholder="Tên đăng nhập" required>
+    </div>
+    <div class="form-group">
+      <input type="password" name="password" placeholder="Mật khẩu" required>
+    </div>
+    <button type="submit" class="btn">Đăng Nhập</button>
+    <div class="options">
+      <label><input type="checkbox"> Ghi nhớ đăng nhập</label>
+      <a href="#">Quên mật khẩu?</a>
+    </div>
+  </form>
+  <div class="footer">
+    Copyright 2024 &copy;Vinfast
+  </div>
+</div>
+</body>
+</html>
